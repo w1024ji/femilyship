@@ -1,5 +1,6 @@
 package com.example.femilyship.service;
 
+import com.example.femilyship.dto.RegistrationRequest;
 import com.example.femilyship.entity.User;
 import com.example.femilyship.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +16,19 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder; // Inject the password encoder
 
-    public User register(String username, String password) {
-        // Check if user already exists
-        if (userRepository.findByUsername(username).isPresent()) {
+    // Inside your AuthService.java file
+
+    public void register(RegistrationRequest registrationRequest) {
+        if (userRepository.existsByUsername(registrationRequest.getUsername())) {
             throw new RuntimeException("Error: Username is already taken!");
         }
 
-        // Hash the password before saving
-        String hashedPassword = passwordEncoder.encode(password);
-        User newUser = new User(username, hashedPassword);
+        // Create new user's account
+        User user = new User();
+        user.setUsername(registrationRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 
-        return userRepository.save(newUser);
+        userRepository.save(user);
     }
 }
 
