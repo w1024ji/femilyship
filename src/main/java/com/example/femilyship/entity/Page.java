@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
@@ -22,5 +24,5 @@ public class Page {
     @Column
     private String author;
     @Column
-    private Long page_number;
+    private Long pageNumber; // 꼭 camel case로 변수 만들기
 }
