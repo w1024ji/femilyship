@@ -2,31 +2,40 @@ package com.example.femilyship.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
+    public static PasswordEncoder passwordEncoder() {
+        // Use BCrypt, the industry standard for password hashing
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // We need to authorize HTTP requests.
-                .authorizeHttpRequests(auth -> auth
-                        // This line specifically allows all requests to the H2 console path.
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for our stateless API
+                .authorizeHttpRequests(authz -> authz
+                        // Allow public access to the h2 console and registration/login endpoints
                         .requestMatchers("/h2-console/**").permitAll()
-                        // For now, we will permit all other requests as well. We'll secure them later.
-                        .anyRequest().permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        // ALSO allow anyone to VIEW pages
+                        .requestMatchers(HttpMethod.GET, "/api/pages").permitAll()
+                        // All other requests must be authenticated
+                        .anyRequest().authenticated()
                 )
-                // The H2 console runs in a frame, so we need to disable this security feature using the new syntax.
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
-                // We also need to disable CSRF protection for the H2 console.
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
-
+                // This is needed to allow the H2 console to be displayed in a frame
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                );
         return http.build();
     }
 }
