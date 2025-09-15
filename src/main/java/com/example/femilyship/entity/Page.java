@@ -21,8 +21,14 @@ public class Page {
     private String title;
     @Column
     private String content;
-    @Column
-    private String author;
-    @Column
-    private Long pageNumber; // 꼭 camel case로 변수 만들기
+
+    // Many pages can belong to one topic
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topic_id") // This will create a 'topic_id' column in the Page table
+    private Topic topic;
+
+    // Many pages can be written by one user
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id") // This will create a 'user_id' column
+    private User author;
 }
