@@ -36,4 +36,10 @@ public class TopicService {
                 .map(TopicDto::new)
                 .collect(Collectors.toList());
     }
+
+    public TopicDto findTopicById(Long id) {
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Topic not found with id: " + id)); // Or a custom exception
+        return new TopicDto(topic);
+    }
 }

@@ -29,4 +29,11 @@ public class TopicController {
         List<TopicDto> topics = topicService.findAllTopics();
         return ResponseEntity.ok(topics);
     }
+
+    // Endpoint to get a single topic by its ID
+    @GetMapping("/{id}")
+    public ResponseEntity<TopicDto> getTopicById(@PathVariable Long id) {
+        TopicDto topic = topicService.findTopicById(id);
+        return ResponseEntity.ok(topic);
+    }
 }
