@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,11 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "author")
-    private List<Page> pages;
+    // User는 N개의 Topic을 가진다
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Topic> topics = new ArrayList<>();
+
+    // User는 N개의 Essay를 가진다.
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Essay> essays = new ArrayList<>();
 }
