@@ -30,7 +30,7 @@ public class Essay {
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
-    // DTO에서 Entity로 변환할 때 사용할 생성자
+    // DTO-> Entity
     public Essay(String title_essay, String content_essay, User author, Topic topic) {
         this.titleEssay = title_essay;
         this.content_essay = content_essay;

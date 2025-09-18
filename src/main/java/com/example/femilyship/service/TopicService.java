@@ -3,7 +3,10 @@ package com.example.femilyship.service;
 import com.example.femilyship.dto.CreateTopicRequest;
 import com.example.femilyship.dto.TopicDto;
 import com.example.femilyship.entity.Topic;
+import com.example.femilyship.entity.User;
 import com.example.femilyship.repository.TopicRepository;
+import com.example.femilyship.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,33 +16,63 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor // Automatically creates a constructor to inject final fields
-@Transactional(readOnly = true) // All methods are read-only by default
 public class TopicService {
 
     private final TopicRepository topicRepository;
+    private final UserRepository userRepository;
 
-    @Transactional // Override the class-level readOnly setting
-    public TopicDto createTopic(CreateTopicRequest request) {
-        // Create a new Topic entity from the request
-        Topic newTopic = new Topic();
-        newTopic.setName(request.getName());
-
-        // Save it to the database
-        Topic savedTopic = topicRepository.save(newTopic);
-
-        // Convert the saved entity to a DTO and return it
-        return new TopicDto(savedTopic);
-    }
-
-    public List<TopicDto> findAllTopics() {
+    // 1. 모든 토픽 목록 조회 (메인 페이지)
+    @Transactional(readOnly = true)
+    public List<TopicDto.ListResponse> getAllTopics() {
         return topicRepository.findAll().stream()
-                .map(TopicDto::new)
+                .map(TopicDto.ListResponse::new)
                 .collect(Collectors.toList());
     }
 
-    public TopicDto findTopicById(Long id) {
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Topic not found with id: " + id)); // Or a custom exception
-        return new TopicDto(topic);
+    // 2. 특정 토픽 상세 조회
+    @Transactional(readOnly = true)
+    public TopicDto.DetailResponse getTopicById(Long topicId) {
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 토픽을 찾을 수 없습니다: " + topicId));
+        return new TopicDto.DetailResponse(topic);
+    }
+
+    // 3. 토픽 생성
+    @Transactional
+    public Topic createTopic(TopicDto.Request requestDto, User author) {
+        // 컨트롤러에서 이미 인증된 User 객체를 직접 전달받음
+        // 따라서 DB에서 User를 다시 조회할 필요가 없음!
+
+        Topic topic = requestDto.toEntity(author);
+        return topicRepository.save(topic);
+    }
+
+    // 4. 토픽 수정
+    @Transactional
+    public Topic updateTopic(Long topicId, TopicDto.Request requestDto, User currentUser) {
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 토픽을 찾을 수 없습니다: " + topicId));
+
+        // User ID(PK)로 작성자 확인 (더 빠르고 안전한 방법)
+        if (!topic.getAuthor().getId().equals(currentUser.getId())) {
+            throw new SecurityException("토픽을 수정할 권한이 없습니다.");
+        }
+
+        topic.update(requestDto.getTitle_topic(), requestDto.getContent_topic());
+        return topic;
+    }
+
+    // 5. 토픽 삭제
+    @Transactional
+    public void deleteTopic(Long topicId, User currentUser) {
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 토픽을 찾을 수 없습니다: " + topicId));
+
+        // User ID(PK)로 작성자 확인
+        if (!topic.getAuthor().getId().equals(currentUser.getId())) {
+            throw new SecurityException("토픽을 삭제할 권한이 없습니다.");
+        }
+
+        topicRepository.delete(topic);
     }
 }

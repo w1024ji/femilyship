@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    // We'll need this method to find a user by their username during login
     Optional<User> findByUsername(String username);
 
     // This is the new method you need to add.

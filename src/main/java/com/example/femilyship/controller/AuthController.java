@@ -28,7 +28,7 @@ public class AuthController {
         this.tokenProvider = tokenProvider;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest registrationRequest) {
         authService.register(registrationRequest);
         // Return a JSON object on success, not plain text.

@@ -14,8 +14,7 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // Inject the password encoder
-
+    private PasswordEncoder passwordEncoder;
     // Inside your AuthService.java file
 
     public void register(RegistrationRequest registrationRequest) {
