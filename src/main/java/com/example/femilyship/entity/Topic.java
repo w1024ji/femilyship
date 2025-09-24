@@ -33,7 +33,6 @@ public class Topic {
     @JsonManagedReference("topic-essays")
     private List<Essay> essays = new ArrayList<>();
 
-    // 1. DTO에서 Entity로 변환 시 사용할 생성자 추가
     public Topic(String title_topic, String content_topic, User author) {
         this.titleTopic = title_topic;
         this.contentTopic = content_topic;

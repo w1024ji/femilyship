@@ -16,18 +16,16 @@ public class AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    // Inside your AuthService.java file
 
     public void register(RegistrationRequest registrationRequest) {
         if (userRepository.existsByUsername(registrationRequest.getUsername())) {
             throw new RuntimeException("Error: Username is already taken!");
         }
 
-        // Create new user's account
         User user = new User();
         user.setUsername(registrationRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        user.setRole(UserRoleEnum.USER); // ◀◀◀ 회원가입 시 USER 권한 부여
+        user.setRole(UserRoleEnum.USER);
 
         userRepository.save(user);
     }

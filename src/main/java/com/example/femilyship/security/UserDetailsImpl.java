@@ -18,11 +18,10 @@ public class UserDetailsImpl implements UserDetails {
         this.user = user;
     }
 
-    // ▼▼▼▼▼ getAuthorities() 메서드를 아래 코드로 완전히 교체해주세요 ▼▼▼▼▼
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         UserRoleEnum userRole = user.getRole();
-        String authority = "ROLE_" + userRole.toString(); // Spring Security 규칙: ROLE_ 접두사 사용
+        String authority = "ROLE_" + userRole.toString();
 
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
         return List.of(simpleGrantedAuthority);

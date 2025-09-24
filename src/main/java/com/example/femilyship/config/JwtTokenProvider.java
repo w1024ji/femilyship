@@ -15,17 +15,13 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    // 1. @Value 어노테이션으로 properties 파일의 값을 주입받습니다.
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    // 2. Key 객체를 멤버 변수로 선언합니다.
     private Key key;
 
-    // 3. 생성자 대신 @PostConstruct를 사용하여 의존성 주입 후 키를 초기화합니다.
     @PostConstruct
     public void init() {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);

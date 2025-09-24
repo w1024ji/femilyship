@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor // Automatically creates a constructor to inject final fields
+@RequiredArgsConstructor
 public class TopicService {
 
     private final TopicRepository topicRepository;
@@ -40,9 +40,6 @@ public class TopicService {
     // 3. 토픽 생성
     @Transactional
     public Topic createTopic(TopicDto.Request requestDto, User author) {
-        // 컨트롤러에서 이미 인증된 User 객체를 직접 전달받음
-        // 따라서 DB에서 User를 다시 조회할 필요가 없음!
-
         Topic topic = requestDto.toEntity(author);
         return topicRepository.save(topic);
     }
@@ -53,7 +50,6 @@ public class TopicService {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 토픽을 찾을 수 없습니다: " + topicId));
 
-        // User ID(PK)로 작성자 확인 (더 빠르고 안전한 방법)
         if (!topic.getAuthor().getId().equals(currentUser.getId())) {
             throw new SecurityException("토픽을 수정할 권한이 없습니다.");
         }
@@ -68,7 +64,6 @@ public class TopicService {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 토픽을 찾을 수 없습니다: " + topicId));
 
-        // User ID(PK)로 작성자 확인
         if (!topic.getAuthor().getId().equals(currentUser.getId())) {
             throw new SecurityException("토픽을 삭제할 권한이 없습니다.");
         }
