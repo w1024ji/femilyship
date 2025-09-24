@@ -7,7 +7,6 @@ import lombok.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
 public class TopicDto {
     // 토픽 생성 및 수정 요청 DTO
     @Getter

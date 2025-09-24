@@ -18,8 +18,13 @@ public class EssayDto {
         private String title_essay;
         private String content_essay;
 
-        public Essay toEntity(Topic topic, User author) { // DTO를 Entity로 변환
-            return new Essay(this.title_essay, this.content_essay, author, topic);
+        public Essay toEntity(Topic topic, User author) {
+            return Essay.builder()
+                    .titleEssay(this.title_essay)
+                    .content_essay(this.content_essay)
+                    .author(author)
+                    .topic(topic)
+                    .build();
         }
     }
 

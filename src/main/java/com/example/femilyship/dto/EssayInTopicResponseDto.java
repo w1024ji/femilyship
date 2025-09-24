@@ -1,10 +1,8 @@
 package com.example.femilyship.dto;
 
 import com.example.femilyship.entity.Essay;
-import lombok.Data;
 import lombok.Getter;
 
-@Data
 @Getter
 public class EssayInTopicResponseDto {
     private Long id;

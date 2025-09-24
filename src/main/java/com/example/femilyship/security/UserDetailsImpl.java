@@ -3,6 +3,7 @@ package com.example.femilyship.security;
 import com.example.femilyship.entity.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -16,12 +17,15 @@ public class UserDetailsImpl implements UserDetails {
     public UserDetailsImpl(User user) {
         this.user = user;
     }
-    public User getUser() {
-        return user;
-    }
+
+    // ▼▼▼▼▼ getAuthorities() 메서드를 아래 코드로 완전히 교체해주세요 ▼▼▼▼▼
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        UserRoleEnum userRole = user.getRole();
+        String authority = "ROLE_" + userRole.toString(); // Spring Security 규칙: ROLE_ 접두사 사용
+
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
+        return List.of(simpleGrantedAuthority);
     }
     @Override
     public String getPassword() {

@@ -32,10 +32,6 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // ▼▼▼▼▼ 기존 코드는 삭제합니다 ▼▼▼▼▼
-    // private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-    // ▲▲▲▲▲ 이 라인을 삭제하세요 ▲▲▲▲▲
-
     private final long validityInMilliseconds = 3600000; // 1 hour
 
     public String generateToken(Authentication authentication) {
@@ -43,12 +39,11 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        // 이제 init()에서 생성된 고정된 key를 사용합니다.
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(key, SignatureAlgorithm.HS512) // 알고리즘을 명시해주는 것이 좋습니다.
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -62,12 +57,18 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    public boolean validateToken(String authToken) {
+    public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken); // 동일한 key를 사용합니다.
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
+        } catch (io.jsonwebtoken.security.SignatureException | SecurityException e) {
+            logger.error("Invalid JWT signature, 유효하지 않은 JWT 서명 입니다.");
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            logger.error("Expired JWT token, 만료된 JWT token 입니다.");
+        } catch (io.jsonwebtoken.UnsupportedJwtException e) {
+            logger.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+        } catch (IllegalArgumentException e) {
+            logger.error("JWT claims is empty, JWT 클레임이 비어있습니다.");
         }
         return false;
     }
