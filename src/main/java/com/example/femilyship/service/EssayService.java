@@ -43,7 +43,7 @@ public class EssayService {
         if (!essay.getAuthor().getId().equals(currentUser.getId())) {
             throw new SecurityException("에세이를 수정할 권한이 없습니다.");
         }
-        essay.update(requestDto.getTitle_essay(), requestDto.getContent_essay());
+        essay.update(requestDto.getTitle(), requestDto.getContent());
         return essay;
     }
 
@@ -58,3 +58,4 @@ public class EssayService {
         essayRepository.delete(essay);
     }
 }
+

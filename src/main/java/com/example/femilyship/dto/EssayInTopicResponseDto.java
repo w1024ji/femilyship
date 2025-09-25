@@ -11,7 +11,7 @@ public class EssayInTopicResponseDto {
 
     public EssayInTopicResponseDto(Essay essay){
         this.id = essay.getId();
-        this.title = essay.getTitleEssay();
-        this.content_essay = essay.getContent_essay();
+        this.title = essay.getTitle();
+        this.content_essay = essay.getContent();
     }
 }

@@ -19,6 +19,7 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -27,12 +28,14 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @OneToMany(mappedBy = "author",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("user-topics")
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Topic> topics = new ArrayList<>();
 
+    @OneToMany(mappedBy = "author",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("user-essays")
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Essay> essays = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)

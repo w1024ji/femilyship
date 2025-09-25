@@ -15,17 +15,18 @@ import java.util.Objects;
 public class Essay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "essay_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String titleEssay;
+    @Column(name = "title", nullable = false)
+    private String title;
 
-    @Column(nullable = false)
-    private String content_essay;
+    @Column(name = "content", nullable = false)
+    private String content;
 
     @JsonBackReference("user-essays")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_essay_id")
+    @JoinColumn(name = "user_id")
     private User author;
 
     @JsonBackReference("topic-essays")
@@ -33,9 +34,9 @@ public class Essay {
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
-    public void update(String title_essay, String content_essay) {
-        this.titleEssay = title_essay;
-        this.content_essay = content_essay;
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
     // --- 수동으로 추가하는 equals() & hashCode() ---

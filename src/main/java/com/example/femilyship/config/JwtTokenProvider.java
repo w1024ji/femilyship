@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Base64; // ◀◀◀ Import 추가
+import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
 
     public String getUsernameFromJWT(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key) // 동일한 key를 사용합니다.
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
