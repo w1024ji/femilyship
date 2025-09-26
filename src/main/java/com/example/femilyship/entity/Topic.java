@@ -22,6 +22,8 @@ public class Topic {
     @Column(nullable = false)
     private String title;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(nullable = false)
     private String content;
 

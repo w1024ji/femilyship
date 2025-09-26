@@ -45,14 +45,12 @@ public class TopicDto {
         private String authorUsername;
         private List<EssayInTopicResponseDto> essays;
 
-        public DetailResponse(Topic topic) {
+        public DetailResponse(Topic topic, List<EssayInTopicResponseDto> essays) {
             this.id = topic.getId();
             this.title = topic.getTitle();
             this.content = topic.getContent();
             this.authorUsername = topic.getAuthor().getUsername();
-            this.essays = topic.getEssays().stream()
-                    .map(EssayInTopicResponseDto::new)
-                    .collect(Collectors.toList());
+            this.essays = essays;
         }
     }
 }

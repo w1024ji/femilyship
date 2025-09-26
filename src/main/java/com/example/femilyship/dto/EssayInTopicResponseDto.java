@@ -7,11 +7,11 @@ import lombok.Getter;
 public class EssayInTopicResponseDto {
     private Long id;
     private String title;
-    private String content_essay;
+    private String authorUsername;
 
-    public EssayInTopicResponseDto(Essay essay){
-        this.id = essay.getId();
-        this.title = essay.getTitle();
-        this.content_essay = essay.getContent();
+    public EssayInTopicResponseDto(Long id, String title, String authorUsername){
+        this.id = id;
+        this.title = title;
+        this.authorUsername = authorUsername;
     }
 }

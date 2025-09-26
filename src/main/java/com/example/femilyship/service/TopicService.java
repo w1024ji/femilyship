@@ -1,8 +1,10 @@
 package com.example.femilyship.service;
 
+import com.example.femilyship.dto.EssayInTopicResponseDto;
 import com.example.femilyship.dto.TopicDto;
 import com.example.femilyship.entity.Topic;
 import com.example.femilyship.entity.User;
+import com.example.femilyship.repository.EssayRepository;
 import com.example.femilyship.repository.TopicRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class TopicService {
 
     private final TopicRepository topicRepository;
+    private final EssayRepository essayRepository;
 
     // 1. 모든 토픽 목록 조회 (메인 페이지)
     @Transactional(readOnly = true)
@@ -28,9 +31,12 @@ public class TopicService {
     // 2. 특정 토픽 상세 조회
     @Transactional(readOnly = true)
     public TopicDto.DetailResponse getTopicById(Long topicId) {
-        Topic topic = topicRepository.findById(topicId)
+        Topic topic = topicRepository.findByIdWithEssays(topicId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 토픽을 찾을 수 없습니다: " + topicId));
-        return new TopicDto.DetailResponse(topic);
+        // 수정된 DTO를 반환하는 레포지토리 메소드 호출
+        List<EssayInTopicResponseDto> essayDtos = essayRepository.findSimpleEssaysByTopicId(topicId);
+
+        return new TopicDto.DetailResponse(topic, essayDtos);
     }
     // 3. 토픽 생성
     @Transactional

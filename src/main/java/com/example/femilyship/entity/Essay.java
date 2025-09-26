@@ -21,6 +21,8 @@ public class Essay {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "content", nullable = false)
     private String content;
 

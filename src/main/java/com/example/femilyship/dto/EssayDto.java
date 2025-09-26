@@ -10,7 +10,7 @@ import lombok.Setter;
 public class EssayDto {
 
     /**
-     * 에세이 생성 및 수정 요청 DTO
+     * 에세이 생성 및 수정 요청 DTO (client -> server)
       */
     @Getter
     @Setter
@@ -31,7 +31,7 @@ public class EssayDto {
     }
 
     /**
-     * 에세이 상세 조회 응답 DTO
+     * 에세이 상세 조회 응답 DTO (server -> client)
      */
     @Getter
     public static class Response {
